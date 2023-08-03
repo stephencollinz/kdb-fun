@@ -430,5 +430,140 @@ add_step2:{
 checker:{[d] l:d[`pos];t:not $[(|/) (l[0]>309;l[1]<-76;r:(&/) l within flip (287 309;-76 -48));1b;0b];if[not t;show n;n+:1;if[r;m+:1]];t};
 do_a_move:{[dict] dict:@[dict;`pos;:;dict[`pos]+dict[`vel]];dict:@[dict;`vel;change_vol]}
 change_vol:{[v] v-(signum[v[0]];1)};
-do_a_move/[checker;] each {[inp]`pos`vel!(0 0;inp)} each (til[320]) cross (til[5000]-90);
+/do_a_move/[checker;] each {[inp]`pos`vel!(0 0;inp)} each (til[320]) cross (til[5000]-90);
 
+
+// Day 20
+x:read0 `:day20.txt;
+image_algo:x[0];
+n:1;
+input_image:2_x;
+bin_dict:(".#")!0 1;
+pad_out_image:{[image]
+ ex:1;
+ c:count[image];
+ s:$[n mod 2;".";"#"];
+ s^((neg)c+2*ex)$'(c+ex)$'(ex#enlist c#s),image,ex#enlist c#s
+ };
+/pad_out:"."^-7$'6$'(enlist 5#"."),input_image,enlist 5#"."
+
+steps: -1 0 1 cross -1 0 1;
+new_pixel_value:{[grid;pixel]
+ s:$[n mod 2;".";"#"];
+ new_value:image_algo 2 sv bin_dict s^.[grid;] each pixel +/: steps
+ };
+
+run_the_algo:{[image]
+ new_image:pad_out_image[image];
+ res:c cut new_pixel_value[new_image;] each  a cross a:til c:count[new_image];
+ n+:1;
+ res
+ };
+
+/count where raze "#"=run_the_algo/[50;input_image]
+ 
+//Day 21
+n:1;
+game_table:([player:`long$()] pos:`long$();score:`long$());
+upsert[`game_table;(1;4;0)];
+upsert[`game_table;(2;3;0)];
+mv_pos:{[pos;mv] g:mod[pos+mv;10];$[not g;g+10;g]};
+
+make_a_move:{[p]
+ if[not check_game[];:()];
+ mv:mv_die[n];
+ .[`game_table;(p;`pos);mv_pos[;mv]];
+ .[`game_table;(p;`score);+;game_table[p;`pos]];
+ n+:3;
+ };
+mv_die:{[num]
+ g:mod[num+0 1 2;100];
+ sum @[g;where 0=g;(100+)]
+ }
+
+check_game:{[t]
+ /show "here";
+ not $[1000<=max exec score from game_table;1b;0b]};
+ make_all_moves:{[]
+ / show "there";
+ p:exec player from game_table;
+ make_a_move each p;
+ game_table
+ };
+
+/make_all_moves/[check_game;`]
+/ exec min score from game_table*n-1
+
+
+
+// Day 22
+ 
+x_22:read0 `:day22b.txt;
+on_cubes:();
+switch_a_row:{[str]
+ switch:first " " vs str;
+ spl:"," vs last " " vs str;
+ nums:"J"$'"." vs' last each "=" vs' spl;
+ nums:3 cut @[raze[nums];where 50<raze nums;:;50];
+ nums:3 cut @[raze[nums];where -50>raze nums;:;-50];
+ //'break
+ cubes:(cross/) {[p]t:til 1+abs (-) . p[0 2];t+p[0]} each nums;
+ $[switch~"on";
+       set[`on_cubes;distinct on_cubes,cubes];
+       set[`on_cubes;except[on_cubes;cubes]]];};
+
+nums_from_row:{[str]
+ witch:first " " vs str;
+ spl:"," vs last " " vs str;
+ nums:"J"$'"." vs' last each "=" vs' spl;
+ nums};
+
+switch_a_row2:{[str]
+ switch:first " " vs str;
+ spl:"," vs last " " vs str;
+ nums:"J"$'"." vs' last each "=" vs' spl;
+ /nums:3 cut @[raze[nums];where 50<raze nums;:;50];
+ /nums:3 cut @[raze[nums];where -50>raze nums;:;-50];
+ /cubes:(cross/) {[p]t:til 1+abs (-) . p[0 2];t+p[0]} each nums;
+ cubes:prd {[p] 1+abs (-) . p[0 2]} each nums;
+ $[switch~"on";
+       set[`on_cubes;on_cubes+cubes];
+       set[`on_cubes;on_cubes-cubes]];};
+
+//Day 24
+readout:read0 `:day24.txt;
+r_y:(where readout like\: "inp*") cut readout;
+getter_map:("add";"mul";"div";"mod";"eql")!(enlist "+";enlist "*";"div";"mod";enlist "=");
+seed:14#"9";
+x:y:z:0;
+getter:{[str]
+ spl:" " vs str;
+ /'break;
+ get spl[1],":(",getter_map[spl[0]],") . (",sv[";";(spl[1];spl[2])],")"};
+
+
+reducer:{[se]{[s]string ("J"$s)-1}/[{[s] $["0" in s;1b;0b]};string$["J";se]-1]};
+
+eval_batch:{[n]
+ show n;
+ set[`x;0];
+ set[`y;0];
+ set[`z;0];
+ set[`w;"J"$seed[n]];
+  getter each 1_r_y[n];
+  if[not z;set[`seed;raze string @["J"$'seed;n;-;1]]];
+  n+1
+   /show (x;y;z);
+  };
+
+/do_monad:{[]
+/ set[`seed;reducer[seed]];
+/ show seed;
+/ set[`x;0];
+/ set[`y;0];
+/ set[`z;0];
+ 
+/ eval_batch each til 14;};
+
+//do_monad/[{[inp]not not z};];
+//eval_batch/[{[inp]not not z};0]

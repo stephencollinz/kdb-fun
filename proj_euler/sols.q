@@ -109,5 +109,5 @@ sum count each .euler.p17.get_a_num each 1+til 1000;
 .euler.p21.s0:.euler.p21.s where (reverse each .euler.p21.s) in\: .euler.p21.s;
 sum (.euler.p21.s0 where not (~) .' .euler.p21.s0)[;0];
 
-euler.p22.t:asc "\",\"" vs -1_1_"c"$read1 `:0022_names.txt
-euler.p22.res:sum {[n] (n+1)*sum 1+.Q.A?t[n]} each til count euler.p22.t;
+.euler.p22.t:asc "\",\"" vs -1_1_"c"$read1 `:0022_names.txt
+.euler.p22.res:sum {[n] (n+1)*sum 1+.Q.A?t[n]} each til count .euler.p22.t;

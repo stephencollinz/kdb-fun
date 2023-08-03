@@ -111,3 +111,24 @@ sum (.euler.p21.s0 where not (~) .' .euler.p21.s0)[;0];
 
 .euler.p22.t:asc "\",\"" vs -1_1_"c"$read1 `:0022_names.txt
 .euler.p22.res:sum {[n] (n+1)*sum 1+.Q.A?t[n]} each til count .euler.p22.t;
+
+.euler.p25.cut1:{x _ x?y} / this removes element 
+.euler.p25.child_anagrams:{[str;substr]
+ if[count[substr]~count[str];:enlist substr]; / if we're done, we're done
+ substr,/:.euler.p25.cut1/[str;substr]};
+
+.euler.p25.get_all_anagrams:{[str]
+ distinct (raze .euler.p25.child_anagrams[str;] each)/[str]};
+
+/.euler.p25.get_all_anagrams["0123456789"][1000000-1];
+ 
+is_palindrome:{reverse[x]~x};
+s:();
+
+
+is_palin_both_bases:{[n]
+ if[not is_palindrome[string n];:()]; 
+ if[is_palindrome[raze string 2 vs n];s,:n]} 
+ 
+/is_palin_both_bases each 1+til 999999;
+/sum s;

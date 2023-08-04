@@ -98,6 +98,16 @@ collatz_check:{
  "and" sv .euler.p17.d5 $[1=count t;t;100 1*t]};
 sum count each .euler.p17.get_a_num each 1+til 1000;
 
+.euler.p18.grid:(),/:get each read0 `:p18.txt;
+.euler.p18.add_a_column:{[input] 
+ r:input[0];
+c:input[1];
+s:input[2];
+if[c=count[grid];:enlist input];
+((r+0 1),\:(c+1)),'s+grid[c;r+0 1]};
+.euler.p18.f0:raze .euler.p18.add_a_column each;
+max (.euler.p18.f0/[enlist 0 1 75])[;2];
+
 
 .euler.p19.dts0:.euler.p19.dts where 1=mod[;7] each .euler.p19.dts:1901.01.01+til 2000.12.31-1901.01.01;
 .euler.p19.res:count where 1=.euler.p19.dts0.dd;
@@ -112,6 +122,12 @@ sum (.euler.p21.s0 where not (~) .' .euler.p21.s0)[;0];
 .euler.p22.t:asc "\",\"" vs -1_1_"c"$read1 `:0022_names.txt
 .euler.p22.res:sum {[n] (n+1)*sum 1+.Q.A?t[n]} each til count .euler.p22.t;
 
+.euler.p23.sum_of_proper_divisors:{t:where not x mod til 1+floor sqrt x;sum distinct t,"j"$x%1_t};
+.euler.p23.is_abundant_number:{x<.euler.p23.sum_of_proper_divisors[x]}
+.euler.p23.abundant_nums:.euler.p23.full_list where .euler.p23.is_abundant_number each .euler.p23.full_list:til 28124;
+/.euler.p23.abundant_sums:distinct raze {a:.euler.p23.abundant_nums+x;a where a<28124} each .euler.p23.abundant_nums;
+/sum except[.euler.p23.full_list;.euler.p23.abundant_sums]
+
 .euler.p25.cut1:{x _ x?y} / this removes element 
 .euler.p25.child_anagrams:{[str;substr]
  if[count[substr]~count[str];:enlist substr]; / if we're done, we're done
@@ -122,26 +138,3 @@ sum (.euler.p21.s0 where not (~) .' .euler.p21.s0)[;0];
 
 /.euler.p25.get_all_anagrams["0123456789"][1000000-1];
  
-.euler.p36.is_palindrome:{reverse[x]~x};
-.euler.p36.s:();
-
-
-.euler.p37.is_palin_both_bases:{[n]
- if[not .euler.p36.is_palindrome[string n];:()]; 
- if[.euler.p36.is_palindrome[raze string 2 vs n];.euler.p36.s,:n]} 
- 
-/.euler.p36.is_palin_both_bases each 1+til 999999;
-/sum .euler.p36.s;
-.euler.p37.is_prime:{if[x in 1 2;:0b];not count 1_where not x mod til 1+floor sqrt x};
-/.euler.p37.k:.euler.p37.g where is_prime each .euler.p47.g:til 1000000
-/sum (4_.euler.p37.k) where {[t] all ("J"$(neg[c],c:1_til count[s])#\:s:string t) in\: k} each 4_.euler.p37.k
-
-
-.euler.p35.is_prime:{if[x in 0 1;:0b];show x;not count 1_where not x mod til 1+floor sqrt x};
-/.euler.p35.k:.euler.p35.g where .euler.p35.is_prime each .euler.p35.g:til 1000000
-/count where {t:"J"$(1 rotate)\[string x]; all t in\: .euler.p35.k} each .euler.p35.k
- 
-/.euler.p50.k:.euler.p35.g where .euler.p50.is_prime each .euler.p50.g:til 1000000;
-/.euler.p50.do_a_step:{index:x[0];sm:x[1];run:x[2];(index;sm+.euler.p50.k[index+run];run+1)};
-/.euler.p50.s:.euler.p50.s0:0;
-/{[n] show (n;.euler.p50.s;.euler.p50.s0);r0:.euler.p50.do_a_step\[{not x[1]>max[.euler.p50.k]};(n;0;0)];if[.euler.p50.s0<m0:r0[;1]?m:max r0[;1] where r0[;1] in\: .euler.p50.k;set[`.euler.p50.s0;m0];set[`.euler.p50.s;m]]} each til count .euler.p50.k;

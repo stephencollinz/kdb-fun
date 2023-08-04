@@ -33,22 +33,12 @@
 .euler.p12.num_factors:{t:where not x mod til 1+floor sqrt x;$[x=last[t]*last[t];(count[t]*2)-1;count[t]*2]};
 
 .euler.p12.next_tri/[{not .euler.p12.num_factors[x[1]]>500};(1;1)];
-d:()!();
-next_collatz:{
- if[(last x[0]) in key[d];:(x[0];d[last x[0]]-1;1b)];
 
- t:"j"$$[not mod[last x[0];2];(last x[0])%2;1+3*last x[0]];
- /d[t]:x[1]+1;
- (x[0],t;x[1];x[2])
- };
-
-collatz_check:{
- /if[x[2];
-    /d[x 0]:]
- if[c:or[x[2];1=last[x[0]]];
-    d[x 0]:x[1]+reverse 1+til count x[0]];
- not c
- }
+.euler.p13.next_collatz:{if[x[1] in key[d];:(x[0];1;x[2]+d[x[1]]-1)];nxt:"j"$$[not mod[x[1];2];x[1]%2;1+3*x[1]];(x[0];nxt;x[2]+1)};
+.euler.p13.collatz_check:{if[c:x[1]=1;d[x[0]]:1+x[2]];not c};
+.euler.p13.d:()!()
+//on the slow side
+/{[n] show n;.euler.p13.next_collatz/[.euler.p13.collatz_check;(n;n;0)]} each 1+til 1000000;
 
 .euler.p15.n:20;
 .euler.p15.pts:til[1+.euler.p15.n] cross til[1+.euler.p15.n];
@@ -101,10 +91,10 @@ sum count each .euler.p17.get_a_num each 1+til 1000;
 .euler.p18.grid:(),/:get each read0 `:p18.txt;
 .euler.p18.add_a_column:{[input] 
  r:input[0];
-c:input[1];
-s:input[2];
-if[c=count[grid];:enlist input];
-((r+0 1),\:(c+1)),'s+grid[c;r+0 1]};
+ c:input[1];
+ s:input[2];
+ if[c=count[.euler.p18.grid];:enlist input];
+ ((r+0 1),\:(c+1)),'s+.euler.p18.grid[c;r+0 1]};
 .euler.p18.f0:raze .euler.p18.add_a_column each;
 max (.euler.p18.f0/[enlist 0 1 75])[;2];
 
@@ -120,7 +110,7 @@ max (.euler.p18.f0/[enlist 0 1 75])[;2];
 sum (.euler.p21.s0 where not (~) .' .euler.p21.s0)[;0];
 
 .euler.p22.t:asc "\",\"" vs -1_1_"c"$read1 `:0022_names.txt
-.euler.p22.res:sum {[n] (n+1)*sum 1+.Q.A?t[n]} each til count .euler.p22.t;
+.euler.p22.res:sum {[n] (n+1)*sum 1+.Q.A?.euler.p22.t[n]} each til count .euler.p22.t;
 
 .euler.p23.sum_of_proper_divisors:{t:where not x mod til 1+floor sqrt x;sum distinct t,"j"$x%1_t};
 .euler.p23.is_abundant_number:{x<.euler.p23.sum_of_proper_divisors[x]}
@@ -138,3 +128,32 @@ sum (.euler.p21.s0 where not (~) .' .euler.p21.s0)[;0];
 
 /.euler.p25.get_all_anagrams["0123456789"][1000000-1];
  
+
+.euler.p25.do_one:{[dict;k]
+ /if[k=count[dict]=1;:dict];
+ dict:@[dict;k+1;+;"j"$div[dict[k];10]];
+ dict:@[dict;k;:;"j"$mod[dict[k];10]];
+ dict};
+
+.euler.p25.next_fib:{
+ a:x[0];
+ b:x[1];
+ n:x[2];
+ L:sum reverse each "J"$''"0"^(neg c:1+max count each (a;b))$'(a;b);
+ r:raze string reverse .euler.p25.do_one/[L;til count[L]-1];
+ r:$[r like "0*";1_r;r];
+ (x[1];r;n+1)
+ };
+
+/.euler.p25.next_fib/[{1000>count x[1]};(enlist "1";enlist "1";2)]
+
+.euler.p20.next_factorial:{[input]
+ n:input[0];
+ str:input[1];
+ L:(n+1)*"J"$'reverse "0"^(neg 1+count str)$str;
+ new_str:raze string reverse .euler.p16.do_one/[L;til count[L]-1];
+ new_str:$[new_str like "0*";1_new_str;new_str];
+ (n+1;new_str)
+ };
+
+sum "J"$'.euler.p20.next_factorial/[99;(1;enlist "1")][1];

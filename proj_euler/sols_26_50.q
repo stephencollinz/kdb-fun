@@ -34,10 +34,28 @@ sum .euler.p30.s where {x=sum xexp[;5] "J"$'string[x]} each .euler.p30.s;
 .euler.p25.get_all_anagrams:{[str]
  distinct (raze .euler.p25.child_anagrams[str;] each)/[str]};
 
+.euler.p29.stringsum:{[dict;k]
+ dict:@[dict;k+1;+;"j"$div[dict[k];10]];
+ dict:@[dict;k;:;"j"$mod[dict[k];10]];
+ dict};
+
+.euler.p29.give_next_power:{[str;power]
+ d0:til[count g]!g:reverse power*"J"$'' str;
+ d1:.euler.p29.stringsum/[d0;key d0];
+ s:raze string reverse value d1;
+ $[s[0]~"0";1_s;s]};
+//.euler.p28.
+//{[n] 1+sum {(4*x*x)-6*(x-1)} each 3+2*til div[n;2]} 1001
 
 /.euler.p27.b:.euler.p27.a where .euler.p35.is_prime each .euler.p27.a:til 1001;
 /.euler.p27.c:(-999+til 1999) cross .euler.p27.b;
 /prd .euler.p27.c first idesc .euler.p27.r:{[a;b] show (a;b);{x+1}/[{[a;b;c].euler.p35.is_prime[(c*c)+(a*c)+b]}[a;b];0]} ./: .euler.p27.c;
+.euler.p31.L:1 2 5 10 20 50 100 200;
+.euler.p31.L0:{[coin] 0,{[x;n] x+n}[;coin]\[{[x;n]200>=x+n}[;coin];coin]} each .euler.p31.L;
+.euler.p31.t:0;
+.euler.p31.cross_coin:{[x;y] a:sum each cross[x;y]; t+:count where a=200;a where a<200};
+/.euler.p41.cross_coin/[L0]
+
 
 count .euler.p41.s:.euler.p25.get_all_anagrams raze string 1+til 7;
 .euler.p41.s1:.euler.p41.s where not (any ') .euler.p41.s like/:\: "*",/:string 2*til 5;
@@ -117,3 +135,8 @@ count .euler.p42.s where .euler.p42.s in\: .euler.p42.tri_nums;
 .euler.p33.c:.euler.p33.a cross .euler.p33.a:10+til 90;
 .euler.p33.r:.euler.p33.c where .euler.p33.digit_fractions each .euler.p33.c;
 reciprocal (%) . prd each flip  .euler.p33.r;
+
+.euler.p47.factors:{t:where not x mod til 1+floor sqrt x;distinct asc "j"$t,x%t};
+/.euler.p47.p:asc .euler.p47.g where .euler.p35.is_prime each .euler.p47.g:til 300000;
+/.euler.p47.r0:{[n] show n; count inter[.euler.p47.factors[n];.euler.p47.p]} each 2+til 300000;
+/first 2+ss[;"1111"] raze string 4=.euler.p47.r0

@@ -44,6 +44,14 @@ sum .euler.p30.s where {x=sum xexp[;5] "J"$'string[x]} each .euler.p30.s;
  d1:.euler.p29.stringsum/[d0;key d0];
  s:raze string reverse value d1;
  $[s[0]~"0";1_s;s]};
+
+.euler.p48.give_next_power:{[str;power]
+ d0:til[count g]!g:(min (count g;11))#g:reverse power*"J"$'' str;
+ d1:.euler.p29.stringsum/[d0;key d0];
+ s:raze string reverse value d1;
+ $[s[0]~"0";1_s;s]};
+
+ g:(min (count g;11))#
 //.euler.p28.
 //{[n] 1+sum {(4*x*x)-6*(x-1)} each 3+2*til div[n;2]} 1001
 
@@ -135,6 +143,9 @@ count .euler.p42.s where .euler.p42.s in\: .euler.p42.tri_nums;
 .euler.p33.c:.euler.p33.a cross .euler.p33.a:10+til 90;
 .euler.p33.r:.euler.p33.c where .euler.p33.digit_fractions each .euler.p33.c;
 reciprocal (%) . prd each flip  .euler.p33.r;
+
+.euler.p40.r:{[x] n:x[0];str:x[1];(n+1;str,string[n])}/[{1000001>count x 1};(0;"")];
+prd "J"$'.euler.p40.r[1;] "j"$xexp[10;]til 7;
 
 .euler.p47.factors:{t:where not x mod til 1+floor sqrt x;distinct asc "j"$t,x%t};
 /.euler.p47.p:asc .euler.p47.g where .euler.p35.is_prime each .euler.p47.g:til 300000;
